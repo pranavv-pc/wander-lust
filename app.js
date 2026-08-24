@@ -1,10 +1,13 @@
 import methodOverride from "method-override";
 import Listing from "./models/listing.js";
 import { fileURLToPath } from "url";
+import dotenv from "dotenv";
 import mongoose from "mongoose";
 import engine from "ejs-mate";
 import expres from "express";
 import path from "path";
+
+dotenv.config();
 
 const app = expres();
 
@@ -19,8 +22,8 @@ app.use(methodOverride("_method"));
 app.use(expres.urlencoded({ extended: true }));
 app.use(expres.static(path.join(__dirname, "/public")));
 
-const PORT = 3000;
-const MONGO_URI = "mongodb://127.0.0.1:27017/wanderlust";
+const PORT = process.env.PORT;
+const MONGO_URI = process.env.MONGO_URI;
 
 
 async function main() {
