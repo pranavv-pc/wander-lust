@@ -11,7 +11,7 @@ const listingSchema = new mongoose.Schema({
     image: {
         filename: {
             type: String,
-            required: true
+            default: "listingImage"
         },
         url: {
             type: String,
@@ -23,7 +23,8 @@ const listingSchema = new mongoose.Schema({
         }
     },
     price: {
-        type: Number
+        type: Number,
+        required: true
     },
     location: {
         type: String

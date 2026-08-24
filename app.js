@@ -1,10 +1,10 @@
 import methodOverride from "method-override";
 import Listing from "./models/listing.js";
 import { fileURLToPath } from "url";
-import dotenv from "dotenv";
 import mongoose from "mongoose";
 import engine from "ejs-mate";
 import expres from "express";
+import dotenv from "dotenv";
 import path from "path";
 
 dotenv.config();
@@ -171,6 +171,9 @@ app.route("/listings/:id")
     res.redirect("/listings");
 }); */
 
+app.use((err, req, res, next) => {
+    res.send("Something went wrong!");
+});
 
 app.use((req, res) => {
     res.status(404).send("<h2 style='text-align: center;'>404 - Page not found / Invalid Page</h2>");
