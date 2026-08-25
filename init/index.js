@@ -1,9 +1,14 @@
-import mongoose from "mongoose";
-import sampleListing from "./data.js";
+// Script written to add sample data to the database
+
 import Listing from "../models/listing.js";
+import sampleListing from "./data.js";
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 async function main() {
-    await mongoose.connect("mongodb://127.0.0.1:27017/wanderlust");
+    await mongoose.connect(process.env.MONGO_URI);
 }
 
 main()

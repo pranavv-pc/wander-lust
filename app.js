@@ -1,4 +1,6 @@
+import ExpressError from "./utils/ExpressError.js"
 import methodOverride from "method-override";
+import { listingSchema } from "./schema.js";
 import Listing from "./models/listing.js";
 import { fileURLToPath } from "url";
 import mongoose from "mongoose";
@@ -37,6 +39,15 @@ main()
     .catch((err) => console.log(err));
 
 
+// Joi Validation
+const validateListing = (req, res, next) => {
+    let { error } = listingSchema.validate(req.body);
+    if (error) {
+        throw new ExpressError(400, error)
+    }
+}
+
+
 /* app.get("/testlisting", async (req, res) => {
     let newListing = new Listing({
         title: "Royal Vintage Stay",
@@ -72,7 +83,19 @@ app.get("/listings/new", (req, res) => {
     res.render("listings/newListing.ejs");
 });
 
-app.post("/listings", async (req, res) => {
+app.post("/listings", validateListing, async (req, res) => {
+
+    /* if (!req.body) {
+        throw new ExpressError(400, "Send valid data for listing");   // Bad Request 
+    } */
+
+    /* let result = listingSchema.validate(req.body);
+    console.log("Joi~~~", result)
+
+    if (result.error) {
+        throw new ExpressError(400, result.error);
+    } */
+
     const newListing = {
         title: req.body.title,
         description: req.body.description,
@@ -106,8 +129,19 @@ app.get("/listings/:id/edit", async (req, res) => {
 
 
 app.route("/listings/:id")
-    .put(async (req, res) => {
+    .put(validateListing, async (req, res) => {
         let { id } = req.params;
+
+        /* if (!req.body) {
+            throw new ExpressError(400, "Send valid data to update listing");   // Bad Request 
+        } */
+
+        /* let result = listingSchema.validate(req.body);
+        console.log("Joi~~~", result)
+
+        if (result.error) {
+            throw new ExpressError(400, result.error);
+        } */
 
         let updatedListing = await Listing.findByIdAndUpdate(
             id,
@@ -171,12 +205,18 @@ app.route("/listings/:id")
     res.redirect("/listings");
 }); */
 
-app.use((err, req, res, next) => {
-    res.send("Something went wrong!");
-});
-
 app.use((req, res) => {
     res.status(404).send("<h2 style='text-align: center;'>404 - Page not found / Invalid Page</h2>");
+});
+
+app.use((err, req, res, next) => {
+    // let { status = 500, message = "Something went wrong" } = err;
+    // res.status(status).send(message);
+
+    const status = err.status || 500;
+    const message = err.message || "Something went wrong";
+
+    res.render("error.ejs", { status, message, stack: err.stack });
 });
 
 app.listen(PORT, () => {

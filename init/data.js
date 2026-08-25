@@ -1,3 +1,5 @@
+// Sample Listings Data
+
 const sampleListings = [
   {
     title: "Cozy Beachfront Cottage",
